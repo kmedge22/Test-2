@@ -1,0 +1,117 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+
+public class Game extends JFrame {
+    private static Square[][] squareArray;
+
+    public Game() {
+        // Creating the Container
+        setTitle("Test");
+        setSize(750, 750);
+        JPanel container = new JPanel();
+        container.setLayout(new BorderLayout());
+        ;
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JPanel board = new JPanel();
+
+        board.setLayout(new GridLayout(10, 10));
+
+        this.squareArray = new Square[10][10];
+
+
+        int k = 1;
+        for (int i = 0; i < 10; i++) {
+
+            for (int j = 0; j < 10; j++) {
+                //creates new Squares at Square(), row, col, and value
+                Square testSquare = new Square();
+                testSquare.setCol(j);
+                testSquare.setRow(i);
+                testSquare.setValue("");
+                testSquare.setIndex(k);
+
+                //add action listener
+                testSquare.addActionListener(e -> checkWhenClicked(testSquare));
+                squareArray[i][j] = (testSquare);
+
+                //set text to grid number
+                testSquare.setText(Integer.toString(k));
+
+                //start board with question mark in last box
+                if (9 <= i && 9 <= j) {
+                    testSquare.setTextLabel("?");
+                    testSquare.setValue("?");
+                }
+                k++;
+                //add squares to the board panel
+                board.add(testSquare);
+            }
+
+        }
+
+        //add board panel to container
+        container.add(board);
+        this.add(container);
+        board.setVisible(true);
+    }
+
+    public void checkWhenClicked(Square testSquare) {
+        Square k = checkRow(testSquare);
+        Square c = checkCol(testSquare);
+        //if the square you clicked is in the row of the ?
+        if (k.getValue().startsWith("?")) {
+            System.out.println("it is in the row");
+            //change your square to ?
+            testSquare.setTextLabel("?");
+            testSquare.setValue("?");
+            //set square with ? back to its grid number
+            squareArray[k.getRow()][k.getCol()].setTextLabel(Integer.toString(k.getIndex()));
+        }
+        //if the square you clicked is in the column of the ?
+        else if (c.getValue().startsWith("?")) {
+            System.out.println("it is in the col");
+            testSquare.setValue("?");
+            testSquare.setTextLabel("?");
+            squareArray[c.getRow()][c.getCol()].setTextLabel(Integer.toString(c.getIndex()));
+        }
+
+    }
+
+    public Square checkRow(Square testSquare){
+        for(int i = 0; i < 10; i++){
+            if (squareArray[testSquare.getRow()][i].isAQuestionMark()){
+                return squareArray[testSquare.getRow()][i];
+            }
+        }
+        return testSquare;
+    }
+
+    public Square checkCol(Square testSquare){
+        for(int i = 0; i < 10; i++){
+            if (squareArray[i][testSquare.getCol()].isAQuestionMark()){
+                return squareArray[i][testSquare.getCol()];
+            }
+        }
+        return testSquare;
+    }
+
+
+
+
+
+    public static void main(String[] args){
+
+        Game testGame = new Game();
+
+        testGame.setVisible(true);
+
+    }
+}
