@@ -1,17 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
+/**
+ * Created by Kelsey Edge
+ * 04/07/2017
+ */
 
 public class Game extends JFrame {
     private static Square[][] squareArray;
 
-    public Game() {
+    private Game() {
         // Creating the Container
         setTitle("Test 2 : Kelsey Edge");
         setSize(750, 750);
@@ -24,10 +22,9 @@ public class Game extends JFrame {
         board.setLayout(new GridLayout(10, 10));
 
         this.squareArray = new Square[10][10];
-        
+
         int k = 1;
         for (int i = 0; i < 10; i++) {
-
             for (int j = 0; j < 10; j++) {
                 //creates new Squares at Square(), row, col, and value
                 Square testSquare = new Square();
@@ -52,7 +49,6 @@ public class Game extends JFrame {
                 //add squares to the board panel
                 board.add(testSquare);
             }
-
         }
 
         //add board panel to container
@@ -61,21 +57,28 @@ public class Game extends JFrame {
         board.setVisible(true);
     }
 
-    //Action Listener
-    //When a square is clicked, flip values if adjacent to square with value "?"
-    public void checkWhenClicked(Square testSquare) {
+
+    /**
+     * Action Listener
+     * When a square is clicked, if the clicked square is adjacent to a square
+     * with a value "?", change clicked square to "?", and the "?" value square
+     * back to it's grid value
+     * @param testSquare square clicked
+     */
+    private void checkWhenClicked(Square testSquare) {
         Square k = checkRow(testSquare);
         Square c = checkCol(testSquare);
 
         //if the square you clicked is in the row of the square with value "?"
         if (k.getValue().startsWith("?")) {
-            
+
             //change clicked square to ?
             testSquare.setTextLabel("?");
             testSquare.setValue("?");
-            
+
             //set square with ? back to its grid number
             squareArray[k.getRow()][k.getCol()].setTextLabel(Integer.toString(k.getIndex()));
+            squareArray[k.getRow()][k.getCol()].setValue(Integer.toString(k.getIndex()));
         }
 
         //if the square you clicked is in the column of the square with value "?"
@@ -84,14 +87,18 @@ public class Game extends JFrame {
             testSquare.setTextLabel("?");
             //set square with ? back to its grid number
             squareArray[c.getRow()][c.getCol()].setTextLabel(Integer.toString(c.getIndex()));
+            squareArray[c.getRow()][c.getCol()].setValue(Integer.toString(c.getIndex()));
         }
-
     }
 
-    //checks to see if square has a value of "?" in the same column
-    //if it does, it returns the Square with the "?" value
-    //if not, it returns the square given
-    public Square checkRow(Square testSquare){
+    /**
+     * Checks to see if clicked square has a square with a value of "?" in the same row
+     * if so, it returns the square with the "?" value
+     * if not, it returns square given
+     * @param testSquare clicked square
+     * @return square
+     */
+    private Square checkRow(Square testSquare){
         for(int i = 0; i < 10; i++){
             if (squareArray[testSquare.getRow()][i].isAQuestionMark()){
                 if (checkIfValid(testSquare, squareArray[testSquare.getRow()][i])){
@@ -102,10 +109,14 @@ public class Game extends JFrame {
         return testSquare;
     }
 
-    //checks to see if square has a value of "?" in the same column
-    //if it does, it returns the Square with the "?" value
-    //if not, it returns the square given
-    public Square checkCol(Square testSquare){
+    /**
+     * Checks to see if clicked square has a square with a value of "?" in the same column
+     * if so, it returns the square with the "?" value
+     * if not, it returns square given
+     * @param testSquare clicked square
+     * @return square
+     */
+    private Square checkCol(Square testSquare){
         for(int i = 0; i < 10; i++){
             if (squareArray[i][testSquare.getCol()].isAQuestionMark()){
                 if (checkIfValid( testSquare, squareArray[i][testSquare.getCol()])) {
@@ -115,16 +126,24 @@ public class Game extends JFrame {
         }
         return testSquare;
     }
-    
+
     //Checks to see if square clicked is adjacent to the square with value question mark
-    public boolean checkIfValid(Square testSquare, Square questionMarkSquare){
-        if (Math.abs(questionMarkSquare.getCol() - testSquare.getCol()) == 1 ||
-                Math.abs(questionMarkSquare.getRow() - testSquare.getRow()) == 1){
+
+    /**
+     * Checks to see if square clicked is adjacent to the square with the value "?"
+     * @param testSquare square clicked
+     * @param questionMarkSquare square with value "?"
+     * @return true/false
+     */
+    private boolean checkIfValid(Square testSquare, Square questionMarkSquare){
+        if ((Math.abs(questionMarkSquare.getCol() - testSquare.getCol()) == 1) && (Math.abs(questionMarkSquare.getRow() - testSquare.getRow()) == 0)){
             return true;
         }
-        return false;
+
+        else
+            return (Math.abs(questionMarkSquare.getRow() - testSquare.getRow())) == 1 && (Math.abs(questionMarkSquare.getCol() - testSquare.getCol()) == 0);
     }
-    
+
 
     public static void main(String[] args){
 
